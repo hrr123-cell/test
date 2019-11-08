@@ -13,3 +13,7 @@ Redis学习*****
 MQ  *
 
 小程序学习*****
+
+git网址   https://github.com/hrr123-cell/test
+
+git bash 中得克隆语句git clone https://github.com/hrr123-cell/test.git
