@@ -1,0 +1,190 @@
+1.使用ADO.NET拉去数据库表，通过TT模板建立数据库表映射的类，这是database first模式
+
+EF的3中编程模式，database first  ，model first  , code first。
+code first 不需要创建ADO去拉实体模型。直接在项目里写model 实体类和dbcontext 上下文，而且还要去除复数的约束
+
+//============================================================
+2.TT模板（T4）(Text Template Transformation Toolkit) 代码生成引擎
+两种模板辅助，以ttinclude结尾的文件
+1.ef6.utility.cs
+2.一种自己定义的多文件辅助模板MUL
+3.有指令块（参数指令，输出指令，程序集指令，包含指令，导入指令）
+4.文本块，就是普通文本输入
+5.控制块<# #>
+6.表达式控制块<#=2+3#>
+7.类功能控制块<#+ #>
+//===============================================================
+3.数据库访问方法（三种）
+
+a.通过EF模式访问数据库，这种模式快速方便，但是数据量过多，查询相对较慢
+b.通过Dapper 封装访问数据库，这种模式轻量，速度仅次于原始方法，好处不少
+c.通过SQL helper 访问数据库，最原始
+
+Dapper访问数据库使用，需要添加两个插件，一个Dapper， 一个Dapper simpleCrud
+
+sqlhelper 访问数据库，不能统一封装。
+三层架构还是要有的
+
+//===========================================================
+4. 依赖注入（IOC）控制反转，有3种，我只用过两种属性注入，构造函数注入，工厂方法注入
+inversion of Contorl  控制反转
+Dependency injection 依赖注入
+控制反转：
+控制：是指IOC容器控制了对象，也就是外部资源
+反转: 正常的new一个对象出来时属于正转的，通过ioc找到对象并注入，属于反转，对象的获取反转了
+
+依赖注入是对ioc更好的理解
+依赖: 应用程序依赖IOC，应用程序需要ioc提供资源
+注入: ioc注入应用程序种某个对象，  注入的内容对象需要的某个资源
+
+//==============================================================
+
+5.面向切面（AOP）：业务处理过程种的切面进行提取。将一些功能独立于业务处理。例如，过滤器机制。
+  面向对象（OOP）实现了3个目标：重用性，灵活性，扩展性
+  3个基本特征:继承，多态，封装。
+  核心:类和对象
+
+
+//=============================================================
+
+6.过滤器（Filter)
+共有4种过滤器,
+1.授权过滤器，2.方法过滤器，3.结果过滤器，4.异常过滤器
+a.授权过滤器有身份验证机制：继承AuthorizeAttribute。
+重写 AuthorizeCore(HttpContextBase httpContext)和HandleUnauthorizedRequest(AuthorizationContext filterContext)
+需要验证身份时重写OnAuthorization(AuthorizationContext filterContext)
+b.方法过滤器：继承ActionFilterAttribute
+重写OnActionExecuting(ActionExecutingContext filterContext)方法前
+重写OnActionExecuted(ActionExecutingContext filterContext)方法后
+如果全局注册后，想让某个控制器或者方法跳过，可以在自定义过滤器中定义一个布尔属性，用于检测
+c.异常过滤器:继承HandleErrorAttribute
+重写OnException(ExceptionContext filterContext)
+全局的话，需要在Global.asax种注册（可以先在APP_Start里写入，然后注册）
+
+//==============================================================
+
+7.流的使用。
+流是数据传递的一个载体，他是一个以Stream类为公共基类的对象，封装了一系列成员用于对流进行读写
+操作。流内有一个  位置指针 用于指示当前读写的位置。按照使用的方式不同，
+流也可以分为文件流、内存流和网络流。
+
+　　文件流：用于对文件进行操作的流对象。
+
+　　内存流：仅仅存在内存中，当应用程序退出或计算机电源关闭，内存流中的数据就会丢失，一般可以用来临时存储数据。
+
+　　网络流：用于网络数据的传输，例如在Socket可以使用网络流来发送和接收数据。
+
+
+//=============================================================
+
+8.创建文件夹和文件，以及向文件和文件夹中写入和读取
+文件流FileStream,
+内存流 MemoryStreams=new MemoryStream();
+
+
+//============================================================
+9.字节和字符串的转换
+string  b="c";
+字符串转换为字节
+byte[]  buffer=System.Text.Encoding.Default.GetByte(b);//其中Default是转换的模式，
+将其再转为字符需要相同的模式
+string cc=System.Text.Encoding.Default.GetString(buffer);
+
+//=============================================================
+10.二分法查找无序数组，先变成有序数组，再查找
+A. 快速排序思路:
+10.1 首先将一组数组得第一位作为基准值，去比较，
+10.2，既然是以数组得第一位为基准值，那先于数组最高位进行对比。如果从小到大排，那要求基准值（最低位）
+要小于最高为（high）得值，要循环，直到从高位往下减，找不到比基准值大得，一旦找到比基准值小得。就将当前
+高位得值赋给基准值所在得位子。如果没找到，那就跳出循环。结束，将基准值得值赋给low下标位置相当于没动
+10.3，如果有高位值被赋予了低位值，再继续比较，用基准值与地位相比，从小到大排得话，低位值要小于基准值，
+直到找到比基准值大的。加到跳出。
+递归快速查找得话，原则就是低位加，高位减
+非递归快速查找。
+B.  非递归快速排序
+原理，第一次叫入栈，建一个数组接收 ，接收low和high。高位加，低位减。
+
+时间复杂度，最高阶项，去除系数
+
+//===========================================================
+11.NPOI读取excel模板，
+a.先根据真实路劲，找到excel。读取模板
+b.用NPOI插件读取模板，找到sheet
+c.找到之后，即可赋值，等操作，合并的单元格，给最左上角的单元格赋值即可。
+
+//=======================================================================
+12.linq 和sql 的区别
+
+a.查询语句
+linq: from s in student select s    //from s in student select new { s.age ,s.name}
+
+sql: select * from student        // select age,name from student 
+
+ef中的联表查询
+数据库表 student ， teacher
+
+student join （teacher，x=>x.teacherage, y=>y.age,(x,y)=>x.age,y.age）这就是一个新表
+
+sql语句分页 根据ID分页
+ select * from student order by ID offset 0 rows fetch next 3 rows only
+其中0指的是从第一行开始，3指的是从第一行到第三行共3行
+
+linq 分页用的是skip和take
+
+sql联表：
+select * from student as a left join  teacher as b on a.age=b.age;
+linq联表:
+from s in student join t in teacher on s.age=t.age select s//select new { s.id,t.id}
+
+定时器和触发器。存储过程
+
+
+SqlDataAdapter对象
+1、表示用于填充 DataSet 和更新 SQL Server 数据库的一组数据命令和一个数据库连接。
+2、在SqlDataAdapter和DataSet之间没有直接连接。当完成SqlDataAdpater.Fill(DataSet)调用后，
+两个对象之间就没有连接了。
+
+SqlCommand  对象
+SqlCommand  这个对象可以让我们在数据库上做一下操作，
+比如说增、删、改、查。都可以使用SqlCommand  这个对象。
+首先，要使用SqlCommand  对象的话，必须先声明它。
+
+事务得原则特性：
+原子性，一致性，独立性，持久性
+//==============================================================
+
+13.docker
+
+windows系统，用docker desktop ,也是类似在虚拟系统中运行docker
+
+==============================================================
+14.HTTP无状态
+是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，
+这样可能导致每次连接传送的数据量增大。
+另一方面，在服务器不需要先前信息时它的应答就较快。
+=============================================================
+
+15.vue cli3项目目录
+
+1.node_modules 依赖文件
+===================
+2.public 公共文件
+favicon.ico 项目ico图标
+index.html 项目打包时会以该文件为母板
+================================
+3.src 资源文件夹
+assets 资源文件夹，存放图片之类的资源
+components 组件文件夹，自己写的组件都放在这个文件夹下
+views 我们所写的页面都放在这里
+App.vue 应用组件，所有自己写的组件都是在这个组件之上运行
+main.js webpack入口文件
+router.js 路由文件夹，决定了页面的跳转规则
+store.js vuex状态管理文件
+==========================================
+package.json 项目描述文件
+vue.config.js【如果没有，请手动创建
+==================================================
+项目运行顺序
+1.
+
+16.时间复杂度，就是按执行次数，然后相加，取最高阶，然后最高阶得系数为1

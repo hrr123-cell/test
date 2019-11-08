@@ -1,0 +1,80 @@
+1.带V的特定属性
+ v-html 指令用于输出 html 代码
+ v-bind 指令用于改变html属性中的值//bind绑定的意思，绑定html中的属性
+例如： <pre><a v-bind:href="url">菜鸟教程</a></pre>改变href
+<div v-bind:class="{'class1': use}">改变class
+ v-if 指令的值只能是true/false来判断一件事一个动作。条件判断
+v-on 指令监听事件 可以监听click ,submit, mousemove等
+例如：<a v-on:click="doSomething">
+<form v-on:submit.prevent="onSubmit"></form>
+
+v-model 指令用来在 input、select、textarea、checkbox、radio 等表单控件元素上创建双向数据绑定，
+根据表单上的值，自动更新绑定的元素的值。
+
+过滤器
+<div id="app">
+  {{ message | capitalize }}   //写法，两个大括号 message为输入值，capitalize为过滤器
+</div>
+    
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    message: 'runoob'
+  },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+  }
+})
+</script>
+
+for循环语句
+<div id="app">
+  <ol>
+    <li v-for="site in sites">  //sites代表源数组数据，site代表每一个值
+      {{ site.name }}
+    </li>
+  </ol>
+</div>
+ 
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    sites: [
+      { name: 'Runoob' },
+      { name: 'Google' },
+      { name: 'Taobao' }
+    ]
+  }
+})
+</script>
+
+
+计算属性
+<div id="app">
+  <p>原始字符串: {{ message }}</p>
+  <p>计算后反转字符串: {{ reversedMessage }}</p>
+</div>
+ 
+<script>
+var vm = new Vue({
+  el: '#app',
+  data: {
+    message: 'Runoob!'
+  },
+  computed: {
+    // 计算属性的 getter
+    reversedMessage: function () {
+      // `this` 指向 vm 实例
+      return this.message.split('').reverse().join('')
+    }
+  }
+})
+</script>
+ **//**computed和methods得区别，computed依赖于缓存。methods每次重新渲染时都会执行
+computed属性默认只有get,可以自己设置set
